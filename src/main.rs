@@ -51,7 +51,7 @@ fn shoot(sign: Sign) -> Result {
         },
     };
 
-    return Result(result_type, bot_sign);
+    Result(result_type, bot_sign)
 }
 
 fn get_input(input: &mut i32) {
@@ -83,6 +83,6 @@ fn main() {
     match shoot(user_sign) {
         Result(ResultType::Win, x) => println!("You won, I choose {}", x),
         Result(ResultType::Loss, x) => println!("I won , I choose {}", x),
-        Result(ResultType::Draw, _) => println!("It's a draw"),
+        Result(ResultType::Draw, x) => println!("It's a draw, we both choose {}", x),
     }
 }
