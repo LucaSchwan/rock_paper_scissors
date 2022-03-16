@@ -1,4 +1,4 @@
-use std::fmt::{self, Display};
+pub(crate) use std::fmt::{self, Display};
 
 use rand::Rng;
 
@@ -27,9 +27,9 @@ enum ResultType {
 struct Result(ResultType, Sign);
 
 fn shoot(sign: Sign) -> Result {
-    let bot_sign = match rand::thread_rng().gen_range(0..3) {
-        0 => Sign::Rock,
-        1 => Sign::Paper,
+    let bot_sign = match rand::thread_rng().gen_range(1..=3) {
+        1 => Sign::Rock,
+        2 => Sign::Paper,
         _ => Sign::Scissors,
     };
 
@@ -54,35 +54,32 @@ fn shoot(sign: Sign) -> Result {
     Result(result_type, bot_sign)
 }
 
-fn get_input(input: &mut i32) {
-    let mut buffer = String::new();
-    std::io::stdin().read_line(&mut buffer).expect("Failed");
-    if let Ok(x) = buffer.trim().parse::<i32>() {
-        *input = x
-    } else {
-        *input = 0
-    }
-}
-
 fn main() {
-    println!("Rock(1), Paper(2), Scissors(3) Shoot:");
-    let mut input: i32 = 0;
-    get_input(&mut input);
+    loop {
+        println!("Rock(1), Paper(2), Scissors(3), Shoot:");
 
-    while !(1..=3).contains::<i32>(&input) {
-        println!("Please enter a valid input");
-        get_input(&mut input);
-    }
+        let mut input = String::new();
+        std::io::stdin().read_line(&mut input).expect("Failed");
 
-    let user_sign = match input {
-        1 => Sign::Rock,
-        2 => Sign::Paper,
-        _ => Sign::Scissors,
-    };
+        match input.trim() {
+            "quit" | "q" | "exit" => break,
+            _ => {}
+        }
 
-    match shoot(user_sign) {
-        Result(ResultType::Win, x) => println!("You won, I choose {}", x),
-        Result(ResultType::Loss, x) => println!("I won , I choose {}", x),
-        Result(ResultType::Draw, x) => println!("It's a draw, we both choose {}", x),
+        let user_sign = match input.trim().parse() {
+            Ok(1) => Sign::Rock,
+            Ok(2) => Sign::Paper,
+            Ok(3) => Sign::Scissors,
+            Ok(_) | Err(_) => {
+                println!("Enter a correct Value.");
+                continue;
+            },
+        };
+
+        match shoot(user_sign) {
+            Result(ResultType::Win, x) => println!("You won, I choose {}", x),
+            Result(ResultType::Loss, x) => println!("I won , I choose {}", x),
+            Result(ResultType::Draw, x) => println!("It's a draw, we both choose {}", x),
+        }
     }
 }
